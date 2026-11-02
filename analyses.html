@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requêtes SQL - Projet KDou</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="conteneur">
+            <h1>Projet KDou</h1>
+            <nav><a href="index.html">Accueil</a>
+                <a href="projet.html">Le projet</a>
+                <a href="base-donnees.html">Base de données</a>
+                <a href="analyses.html" style="font-weight:bold;">Requêtes SQL</a>
+                <a href="indicateurs.html">Indicateurs</a>
+                <a href="equipe.html">Notre équipe</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h2>Nos requêtes SQL</h2>
+        <p>Cette partie présente les dix requêtes réalisées pour répondre aux différentes questions du projet.</p>
+        <section class="requete">
+            <h2>Requête 1 : Vérifier les coordonnées des clients parisiens</h2>
+            <p><strong>Question :</strong> Liste des clients situés à Paris, triée par société.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Societe, Adresse
+FROM Clientele
+WHERE Clientele.Ville Like "Paris"
+ORDER BY Clientele.Societe;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-01.png" alt="Résultat de la requête SQL 1"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 2 : Produits des États-Unis coûtant moins de 25 €</h2>
+            <p><strong>Question :</strong> Quels sont les produits de provenance des États-Unis avec un coût d’achat de
+                moins de 25 € ? On veut connaître leur nom et leur prix, ainsi que le nom du fournisseur et sa ville.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Produit.nomProd, Produit.CoutAchat, Fournisseur.Contact, Fournisseur.Ville
+FROM (Pays INNER JOIN Fournisseur ON Pays.NoPays = Fournisseur.NoPays) INNER JOIN Produit ON Fournisseur.NoFour = Produit.NoFour
+WHERE Fournisseur.NoPays = 7 AND Produit.CoutAchat &lt; 25;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-02.png" alt="Résultat de la requête SQL 2"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 3 : Viandes ou poissons coûtant plus de 50 €</h2>
+            <p><strong>Question :</strong> Quels sont les produits (avec fournisseur et pays de provenance) de catégorie
+                viandes ou poissons ayant un coût d’achat de plus de 50 € ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Produit.NomProd, Fournisseur.Contact, Pays.PaysFR, Categorie.NomCateg, Produit.CoutAchat
+FROM ((Fournisseur INNER JOIN Produit ON Fournisseur.NoFour = Produit.NoFour) INNER JOIN Pays ON Pays.NoPays = Fournisseur.NoPays) INNER JOIN Categorie ON Categorie.CodeCateg = Produit.CodeCateg
+WHERE (Produit.CodeCateg = 6 OR Produit.CodeCateg = 8) AND Produit.CoutAchat &gt; 50;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-03.png" alt="Résultat de la requête SQL 3"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 4 : Fournisseurs proposant de la viande ou du poisson</h2>
+            <p><strong>Question :</strong> Quels fournisseurs proposent de la viande ou du poisson ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Fournisseur.Contact
+FROM Fournisseur INNER JOIN Produit ON Fournisseur.NoFour = Produit.NoFour
+WHERE Produit.CodeCateg = 6 OR Produit.CodeCateg = 8;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-04.png" alt="Résultat de la requête SQL 4"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 5 : Fournisseurs proposant à la fois de la viande et du poisson</h2>
+            <p><strong>Question :</strong> Quels fournisseurs proposent de la viande et du poisson ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Fournisseur.Societe
+FROM ((Fournisseur INNER JOIN (Categorie INNER JOIN Produit ON Categorie.Codecateg = Produit.CodeCateg) ON Fournisseur.NoFour = Produit.NoFour) INNER JOIN Produit AS Produit_1 ON Fournisseur.NoFour = Produit_1.NoFour) INNER JOIN Categorie AS Categorie_1 ON Produit_1.CodeCateg = Categorie_1.CodeCateg
+WHERE (((Categorie.CodeCateg) = 6) AND ((Categorie_1.CodeCateg) = 8));</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-05.png" alt="Résultat de la requête SQL 5"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 6 : Produits conditionnés dans du carton ou du verre</h2>
+            <p><strong>Question :</strong> Quels sont les produits conditionnés dans du carton ou dans du verre ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Produit.NomProd
+FROM Produit
+WHERE Produit.QteParUnit LIKE "*carton*" OR Produit.QteParUnit LIKE "*verre*";</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-06.png" alt="Résultat de la requête SQL 6"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 7 : Les trois dernières commandes de Max Deschamps</h2>
+            <p><strong>Question :</strong> Donner les 3 dernières commandes du client Max Deschamps.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT TOP 3 C.CodeCli, C.Contact, CO.CodeCli, CO.[N° commande], CO.DateCde
+FROM Clientele AS C INNER JOIN Commande AS CO ON C.CodeCli = CO.CodeCli
+WHERE C.Contact = "Max Deschamps"
+ORDER BY CO.DateCde DESC;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-07.png" alt="Résultat de la requête SQL 7"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 8 : Fournisseurs ne proposant que des desserts</h2>
+            <p><strong>Question :</strong> Quels fournisseurs ne proposent que des desserts ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT F.NoFour, F.Societe, P.CodeCateg, C.NomCateg
+FROM Fournisseur AS F INNER JOIN (Categorie AS C INNER JOIN Produit AS P ON C.CodeCateg = P.CodeCateg) ON F.NoFour = P.NoFour
+GROUP BY F.NoFour, F.Societe, P.CodeCateg, C.NomCateg
+HAVING (((Sum(IIf(P.CodeCateg=3,1,0)))=Count(*)));</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-08.png" alt="Résultat de la requête SQL 8"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 9 : Fournisseurs étrangers sans produit au catalogue</h2>
+            <p><strong>Question :</strong> Quels fournisseurs hors France n’ont pas encore de produits au catalogue de
+                KDou ?</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT F.NoFour, F.Societe
+FROM (Fournisseur AS F INNER JOIN Pays AS PA ON F.NoPays = PA.NoPays) LEFT JOIN Produit AS P ON F.NoFour = P.NoFour
+WHERE PA.PaysFR &lt;&gt; "France"
+    AND P.RefProd IS NULL;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-09.png" alt="Résultat de la requête SQL 9"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Requête 10 : Couples de clients situés à Paris</h2>
+            <p><strong>Question :</strong> Pour optimiser les livraisons, on veut savoir quels couples de clients sont
+                situés à Paris.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT C1.Societe, C1.Contact, C1.Ville AS Ville1, C2.Societe AS Client2, C2.Contact AS Contact2, C2.Ville AS Ville2
+FROM Clientele AS C1, Clientele AS C2
+WHERE C1.Ville = "Paris"
+    AND C2.Ville = "Paris"
+    AND C1.CodeCli &lt; C2.CodeCli;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/requete-10.png" alt="Résultat de la requête SQL 10"
+                onerror="this.style.display='none'">
+        </section>
+    </main>
+    <footer>
+        <div class="conteneur">
+            <p>Projet scolaire KDou - Rapport collectif</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de données - Projet KDou</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="conteneur">
+            <h1>Projet KDou</h1>
+            <nav><a href="index.html">Accueil</a>
+                <a href="projet.html">Le projet</a>
+                <a href="base-donnees.html" style="font-weight:bold;">Base de données</a>
+                <a href="analyses.html">Requêtes SQL</a>
+                <a href="indicateurs.html">Indicateurs</a>
+                <a href="equipe.html">Notre équipe</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+
+        <h2>Présentation de la base de données</h2>
+        <p>Cette partie présente les différentes tables utilisées dans notre projet ainsi que les informations qu'elles
+            contiennent.</p>
+        <h2>Les tables</h2>
+        <p>La base de données KDou est organisée en plusieurs tables. Chaque table regroupe des informations sur un
+            élément précis. La première information indiquée pour chaque table correspond à sa clé principale.</p>
+        <table>
+            <tr>
+                <th>Nom de la table</th>
+                <th>Informations contenues</th>
+                <th>Clé principale</th>
+            </tr>
+            <tr>
+                <td><strong>Pays</strong></td>
+                <td>NoPays, PaysFR, PaysEN, Capitale, CodeISO, Devise, UE</td>
+                <td>NoPays</td>
+            </tr>
+            <tr>
+                <td><strong>Fournisseur</strong></td>
+                <td>NoFour, Societe, Contact, Fonction, Adresse, Ville, Region, CP, NoPays, Tel</td>
+                <td>NoFour</td>
+            </tr>
+            <tr>
+                <td><strong>Produit</strong></td>
+                <td>RefProd, NoFour, CodeCateg, NomProd, QteParUnit, CoutAchat, UnitStock</td>
+                <td>RefProd</td>
+            </tr>
+            <tr>
+                <td><strong>Categorie</strong></td>
+                <td>CodeCateg, NomCateg, Description, CoefMarge</td>
+                <td>CodeCateg</td>
+            </tr>
+            <tr>
+                <td><strong>DetailCommande</strong></td>
+                <td>N°Commande, Réf Produit, Quantité, Remise (%)</td>
+                <td>N°Commande + Réf Produit</td>
+            </tr>
+            <tr>
+                <td><strong>Commande</strong></td>
+                <td>N°Commande, CodeCli, DateCde, AlivAv, DateEnv, Port</td>
+                <td>N°Commande</td>
+            </tr>
+            <tr>
+                <td><strong>Clientele</strong></td>
+                <td>CodeCli, Societe, Contact, CodeCliPart, NoPays, Adresse, Ville, CodePostal, Tel, MailCli</td>
+                <td>CodeCli</td>
+            </tr>
+            <tr>
+                <td><strong>Clientele_1</strong></td>
+                <td>CodeCli, Societe, Contact, CodeCliPart, NoPays, Adresse, Ville, CodePostal, Tel, MailCli</td>
+                <td>CodeCli</td>
+            </tr>
+        </table>
+        <h2>Relations entre les tables</h2>
+        <p>Les tables sont reliées entre elles grâce à des clés étrangères. Ces relations permettent notamment de relier
+            les fournisseurs à leurs pays et à leurs produits, les produits à leurs catégories, ainsi que les commandes
+            aux clients et aux détails des commandes.</p>
+        <img class="image-site" src="images/relations-tables.png"
+            alt="Schéma des relations entre les tables de la base KDou" onerror="this.style.display='none'">
+    </main>
+    <footer>
+        <div class="conteneur">
+            <p>Projet scolaire KDou - Rapport collectif</p>
+        </div>
+    </footer>
+</body>
+
+</html>

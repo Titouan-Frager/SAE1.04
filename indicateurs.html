@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicateurs - Projet KDou</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="conteneur">
+            <h1>Projet KDou</h1>
+            <nav><a href="index.html">Accueil</a>
+                <a href="projet.html">Le projet</a>
+                <a href="base-donnees.html">Base de données</a>
+                <a href="analyses.html">Requêtes SQL</a>
+                <a href="indicateurs.html" style="font-weight:bold;">Indicateurs</a>
+                <a href="equipe.html">Notre équipe</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h2>Nos indicateurs</h2>
+        <p>Cette partie présente les quatre indicateurs calculés à partir de la base de données KDou. Chaque indicateur
+            répond à une question liée à une réflexion sur l'entreprise.</p>
+        <section class="requete">
+            <h2>Indicateur 2 : Chiffre d'affaires réalisé avec les fournisseurs de l'Union européenne</h2>
+            <p><strong>Réflexion :</strong> Dans le cadre d'une réflexion en lien avec l'origine de ses produits, nous
+                voulons connaître le chiffre d'affaires total généré à ce jour avec les fournisseurs de l'Union
+                européenne.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT SUM(
+        DC.Quantité * Produit.CoutAchat * (1 - DC.[Remise (%)] / 100)
+    ) AS [CA total UE]
+FROM ((Pays INNER JOIN Fournisseur ON Pays.NoPays = Fournisseur.NoPays) INNER JOIN Produit ON Fournisseur.NoFour = Produit.NoFour) INNER JOIN DetailCommande AS DC ON Produit.RefProd = DC.[Réf produit]
+WHERE Pays.UE = "Membre";</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/indicateur-02.png" alt="Résultat de l'indicateur 2"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Indicateur 3 : Chiffre d'affaires annuel des desserts et des boissons</h2>
+            <p><strong>Réflexion :</strong> Dans le cadre d'une réflexion en lien avec la santé, nous voulons connaître
+                le chiffre d'affaires généré chaque année (montant total des ventes) pour les catégories desserts ou
+                boissons.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Year(C.DateCde) AS Année, Categorie.NomCateg, SUM(
+        DC.Quantité * Produit.CoutAchat * (1 - DC.[Remise (%)] / 100)
+    ) AS [Chiffre d'affaires]
+FROM ((Commande AS C INNER JOIN DetailCommande AS DC ON C.[N° commande] = DC.[N° commande]) INNER JOIN Produit ON DC.[Réf produit] = Produit.RefProd) INNER JOIN Categorie ON Produit.CodeCateg = Categorie.CodeCateg
+WHERE Categorie.NomCateg In ("Desserts","Boissons")
+GROUP BY Year(C.DateCde), Categorie.NomCateg;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/indicateur-03.png" alt="Résultat de l'indicateur 3"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Indicateur 4 : Nombre de produits carnés non commandés</h2>
+            <p><strong>Réflexion :</strong> Dans le cadre d'une réflexion en lien avec l'offre commerciale, nous voulons
+                calculer le nombre de produits carnés qui n'ont actuellement fait l'objet d'aucune commande.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT Count(P.RefProd) AS [NB produits non commandés]
+FROM Produit AS P LEFT JOIN DetailCommande AS DC ON P.RefProd = DC.[Réf produit]
+WHERE P.CodeCateg = 6
+    AND DC.[Réf produit] IS NULL;</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/indicateur-04.png" alt="Résultat de l'indicateur 4"
+                onerror="this.style.display='none'">
+        </section>
+        <hr>
+        <section class="requete">
+            <h2>Indicateur 5 : Comparaison des commandes des clients pilotes et partenaires</h2>
+            <p><strong>Réflexion :</strong> Dans le cadre d'une réflexion sur le partenariat client, nous voulons savoir
+                si des clients pilotes d'un réseau partenaire ont autant de commandes que les clients partenaires.</p>
+            <p><strong>Requête SQL :</strong></p>
+            <pre>SELECT CL1.CodeCli, CL2.CodeCli, Count(C1.[N° commande]) AS [Commandes pilote], Count(C2.[N° commande]) AS [Commandes partenaire]
+FROM ((Clientele AS CL1 INNER JOIN Commande AS C1 ON CL1.CodeCli = C1.CodeCli) INNER JOIN Clientele AS CL2 ON CL1.CodeCliPart = CL2.CodeCli) INNER JOIN Commande AS C2 ON CL2.CodeCli = C2.CodeCli
+GROUP BY CL1.CodeCli, CL2.CodeCli
+HAVING Count(C1.[N° commande]) = Count(C2.[N° commande]);</pre>
+            <p><strong>Résultat :</strong></p>
+            <img class="image-site" src="images/indicateur-05.png" alt="Résultat de l'indicateur 5"
+                onerror="this.style.display='none'">
+        </section>
+    </main>
+    <footer>
+        <div class="conteneur">
+            <p>Projet scolaire KDou - Rapport collectif</p>
+        </div>
+    </footer>
+</body>
+
+</html>
